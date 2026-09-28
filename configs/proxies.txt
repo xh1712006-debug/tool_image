@@ -1,0 +1,16 @@
+# ==============================================================================
+# DANH SÁCH PROXY CHO HỆ THỐNG TỰ ĐỘNG XOAY IP (MỖI DÒNG MỘT PROXY)
+# ==============================================================================
+# Hệ thống hỗ trợ tất cả các định dạng sau:
+# 1. Dạng phổ biến khi mua tại VN:  103.xxx.xxx.xxx:8080:username:password
+# 2. Dạng có protocol:               http://username:password@103.xxx.xxx.xxx:8080
+# 3. Dạng không cần pass (IP auth): 103.xxx.xxx.xxx:8080
+# 4. Dạng Socks5:                   socks5://username:password@103.xxx.xxx.xxx:1080
+#
+# LƯU Ý QUAN TRỌNG:
+# - Nếu bạn dùng "Proxy Xoay" (Rotating Proxy): Bạn chỉ cần dán 1 dòng proxy xoay duy nhất vào đây.
+#   Tool sẽ dùng cổng đó và server proxy sẽ tự động cấp 1 IP dân cư mới mỗi khi mở tab tài khoản mới!
+# - Hãy xóa dấu # và thay bằng proxy thật của bạn:
+# Ví dụ:
+# 103.152.112.50:8080:userdemo:passdemo
+

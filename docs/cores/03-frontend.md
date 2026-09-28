@@ -1,45 +1,40 @@
-# Thiết kế Kiến trúc Frontend & UI/UX (Frontend Architecture & UI/UX Design)
+# Thiết Kế Giao Diện Giám Sát & Theo Dõi Tiến Trình (Monitoring & UI Design)
 
-Tài liệu này đặc tả thiết kế giao diện (UI/UX) và kiến trúc ứng dụng phía Client (Frontend) của hệ thống.
+Để người vận hành dễ dàng theo dõi toàn bộ trạng thái chạy của 1000 tài khoản trong thời gian thực, hệ thống hỗ trợ 2 hình thức giao diện: **Terminal TUI Dashboard** (mặc định) và **Web/Desktop GUI Dashboard**.
 
-## 1. Công nghệ Sử dụng (Frontend Stack)
-- **Framework**: React.js / Vue.js / Next.js / Svelte (chọn tùy dự án).
-- **Styling**: Vanilla CSS / Tailwind CSS / Styled Components.
-- **State Management**: Redux Toolkit / Zustand / Pinia / React Context.
-- **Build Tools**: Vite / Webpack / TurboPack.
+---
 
-## 2. Cấu trúc Thư mục Frontend (Directory Structure)
-Cấu trúc đề xuất cho thư mục mã nguồn Frontend:
+## 1. Giao Diện Dòng Lệnh Hiện Đại (Modern Terminal UI - Rich TUI)
+
+Sử dụng thư viện `rich` để dựng bảng điều khiển thời gian thực ngay trên cửa sổ Console/PowerShell mà không cần bật trình duyệt:
 
 ```text
-📂 frontend
- ┣ 📂 src
- ┃ ┣ 📂 assets          # Hình ảnh, font chữ, icons dùng chung
- ┃ ┣ 📂 components      # Components dùng chung (Button, Modal, Input...)
- ┃ ┣ 📂 hooks           # Custom React/Vue hooks
- ┃ ┣ 📂 layouts         # Layouts trang (DefaultLayout, AdminLayout...)
- ┃ ┣ 📂 pages           # Các trang màn hình của ứng dụng
- ┃ ┣ 📂 services        # Các hàm gọi API (axios/fetch config)
- ┃ ┗ 📂 store           # Cấu hình quản lý trạng thái toàn cục (Zustand/Redux)
- ┣ 📜 index.html        # File HTML chính
- ┣ 📜 vite.config.js    # Cấu hình build Vite
- ┗ 📜 package.json      # Dependencies frontend
+┌─────────────────────────── GAME ACCOUNT AUTOMATION ENGINE v1.0 ───────────────────────────┐
+│ Game: [Võ Lâm Truyền Kỳ] │ Dải chạy: 0001 -> 1000 │ Luồng: 3 Workers │ Proxy Pool: 15 Sạch │
+├───────────────────────────────────────────────────────────────────────────────────────────┤
+│ Tiến độ: [█████████████████████████----------------] 52.4% (524/1000)                      │
+│ Thành công: 512 (97.7%) │ Thất bại: 12 (2.3%) │ Tốc độ: ~14 acc/phút │ Ước tính: 34 phút  │
+├───────────────────────────────────────────────────────────────────────────────────────────┤
+│ WORKER STATUS                                                                             │
+│ • Worker #1: [dragon_0522] - Đang chờ OTP từ Mail (gamer_91@tmp.org) [12s]                │
+│ • Worker #2: [dragon_0523] - Đang điền Form Đăng Ký (Proxy: 103.45.xx:8080)               │
+│ • Worker #3: [dragon_0524] - Đăng ký THÀNH CÔNG -> Đang ghi file .txt                     │
+├───────────────────────────────────────────────────────────────────────────────────────────┤
+│ NHẬT KÝ THỜI GIAN THỰC (LIVE LOGS)                                                        │
+│ [11:15:20] [INFO] [Worker 3] Hoàn tất dragon_0521 -> Đã lưu vào accounts_output.txt       │
+│ [11:15:22] [WARN] [Worker 1] Mail timeout lần 1 -> Đang tự động đổi mail mới              │
+│ [11:15:25] [INFO] [Worker 2] Đã kết nối Proxy Dân Cư IP 103.45.xx.xx (Độ trễ 45ms)       │
+└───────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 3. Hệ thống Thiết kế & Thẩm mỹ (Design System & Theme)
-Để ứng dụng có cảm giác cao cấp (Premium UX), cần tuân thủ các nguyên tắc thiết kế sau:
+---
 
-- **Bảng màu (Color Palette)**:
-  - Nên thiết lập bảng màu thông qua biến CSS (CSS Variables) hoặc Tailwind Theme Config.
-  - Sử dụng các màu sắc tinh tế, dịu mắt (ví dụ: Slate/Zinc cho màu trung tính, Indigo/Emerald cho màu nhấn).
-- **Chế độ tối (Dark Mode)**:
-  - Hỗ trợ giao diện sáng/tối (Light/Dark Mode) thông qua class `.dark` ở thẻ `html`.
-- **Phông chữ (Typography)**:
-  - Sử dụng font chữ hiện đại, hỗ trợ đầy đủ tiếng Việt như *Inter*, *Outfit*, hoặc *Be Vietnam Pro*.
-- **Hoạt ảnh (Animations)**:
-  - Sử dụng micro-animations cho các nút bấm khi hover hoặc click (sử dụng thuộc tính `transition` hoặc thư viện như `framer-motion`).
+## 2. Giao Diện Đồ Họa Nâng Cao (Web / Desktop GUI Dashboard - Tùy chọn)
 
-## 4. Quản lý Trạng thái & API Caching
-- **Trạng thái cục bộ (Local State)**: Chỉ dùng `useState` (hoặc ref) đối với các biến hiển thị trong phạm vi hẹp của Component (ví dụ: trạng thái mở/đóng Modal).
-- **Trạng thái toàn cục (Global State)**: Lưu trữ thông tin đăng nhập của người dùng, cài đặt cấu hình hệ thống, giỏ hàng...
-- **API Caching**: Sử dụng `@tanstack/react-query` hoặc RTK Query để quản lý cache dữ liệu từ Server, hạn chế gửi yêu cầu API lặp lại vô ích.
+Nếu nâng cấp lên giao diện đồ họa hoàn chỉnh:
+- **Desktop App**: Sử dụng **CustomTkinter** hoặc **Flet (Flutter for Python)** để đóng gói thành 1 file `.exe` duy nhất cho Windows.
+- **Web App Dashboard**: Sử dụng **FastAPI** làm Backend phục vụ WebSocket và **Vite + React** làm giao diện điều khiển qua trình duyệt:
+  - Form chọn game từ danh sách `game_profiles.json`.
+  - Ô nhập số lượng (Start Index, End Index).
+  - Nút **[BẮT ĐẦU CHẠY]**, **[TẠM DỪNG]**, **[TIẾP TỤC (RESUME)]**.
+  - Bảng danh sách tài khoản đã tạo thành công với nút **[TẢI FILE .TXT]**.

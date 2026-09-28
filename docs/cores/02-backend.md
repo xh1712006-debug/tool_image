@@ -1,109 +1,92 @@
-# Thiết kế Kiến trúc Backend & API (Backend Architecture & API Design)
+# Thiết Kế Kiến Trúc Backend & Động Cơ Tự Động Hóa (Engine Architecture)
 
-Tài liệu này đặc tả kiến trúc backend, cấu trúc thư mục mã nguồn và chuẩn giao tiếp API dành cho hệ thống.
+Tài liệu này đặc tả cấu trúc mã nguồn, các lớp trừu tượng (Abstract Layers) và mô hình điều phối tác vụ (Task Orchestration) cho công cụ tự động hóa.
 
-## 1. Công nghệ Sử dụng (Backend Stack)
-- **Runtime**: Node.js (phiên bản LTS) / Python / Go (chọn tùy dự án).
-- **Framework**: Express.js / NestJS / FastAPI / Echo.
-- **ORM / Query Builder**: Prisma / Sequelize / TypeORM / SQLAlchemy.
+---
 
-## 2. Cấu trúc Thư mục Mã nguồn theo mô hình Modular MVC (Directory Structure)
-Hệ thống được thiết kế theo mô hình **Modular MVC**. Trong đó:
-- **MVC Ngoài (Cơ sở/Root)**: Nằm trong thư mục `src/cores/`, định nghĩa các thành phần MVC dùng chung cho toàn bộ hệ thống (như Authentication, User profile, base middlewares, base models...).
-- **MVC Trong (Module con)**: Nằm trong thư mục `src/modules/`, chia ứng dụng thành các phân hệ độc lập. Mỗi phân hệ (module) chứa một bộ MVC con khép kín tự quản lý logic của chính nó (ví dụ: module bài viết `posts`, module đặt hàng `orders`...).
+## 1. Công Nghệ Nền Tảng (Core Stack)
+- **Ngôn ngữ**: Python 3.10+ (hoặc Node.js TypeScript).
+- **Trình duyệt Tự động hóa**: `playwright` kết hợp thư viện `playwright-stealth` (ẩn thuộc tính webdriver).
+- **Giao tiếp Mạng & API**: `httpx` (hỗ trợ HTTP/2, async connection pooling) / `aiohttp`.
+- **Cơ sở dữ liệu Cục bộ**: `sqlite3` (hoặc `aiosqlite`) với chuẩn WAL mode.
+- **Xác thực dữ liệu**: `pydantic v2` định nghĩa Schema cấu hình và dữ liệu tài khoản.
 
-Cấu trúc thư mục chi tiết như sau:
+---
+
+## 2. Cấu Trúc Thư Mục Mã Nguồn Module Hóa (Modular Directory Layout)
+
+Hệ thống được tổ chức theo từng module độc lập, phân tách rõ ràng giữa nghiệp vụ sinh dữ liệu, giao tiếp API bên ngoài, điều khiển trình duyệt và xuất báo cáo:
 
 ```text
-📂 backend
+📦 GameAccountCreator
+ ┣ 📂 configs                     # Tệp cấu hình hệ thống & hồ sơ game
+ ┃ ┣ 📜 app_config.yaml           # Cấu hình số luồng, timeout, chế độ delay
+ ┃ ┣ 📜 game_profiles.json        # Định nghĩa selectors, URL đăng ký các game
+ ┃ ┗ 📜 proxies.txt               # Danh sách proxy (ip:port:user:pass)
  ┣ 📂 src
- ┃ ┣ 📂 cores                 # MVC ngoài dành cho root dùng chung cho cả hệ thống
- ┃ ┃ ┣ 📂 controllers         # Controllers dùng chung (ví dụ: Auth, Upload...)
- ┃ ┃ ┣ 📂 models              # Models cốt lõi / dùng chung (ví dụ: User, Session...)
- ┃ ┃ ┣ 📂 middlewares         # Middlewares hệ thống (requireToken, checkPermission...)
- ┃ ┃ ┗ 📜 cores.routes.js     # Router cốt lõi hệ thống
- ┃ ┣ 📂 modules               # Phân vùng chia theo các module độc lập
- ┃ ┃ ┣ 📂 post                # Module Bài viết (ví dụ)
- ┃ ┃ ┃ ┣ 📂 controllers       # Controller con của module Post
- ┃ ┃ ┃ ┣ 📂 models            # Model con của module Post
- ┃ ┃ ┃ ┣ 📂 services          # Lớp nghiệp vụ xử lý logic riêng của Post
- ┃ ┃ ┃ ┗ 📜 post.routes.js    # Routes con của module Post
- ┃ ┃ ┣ 📂 order               # Module Đơn hàng (ví dụ)
- ┃ ┃ ┃ ┣ 📂 controllers       # Controller con của module Order
- ┃ ┃ ┃ ┣ 📂 models            # Model con của module Order
- ┃ ┃ ┃ ┣ 📂 services          # Lớp nghiệp vụ xử lý logic riêng của Order
- ┃ ┃ ┃ ┗ 📜 order.routes.js   # Routes con của module Order
- ┃ ┃ ┗ 📂 ...                 # Các module nghiệp vụ khác
- ┃ ┣ 📂 utils                 # Các hàm helper dùng chung
- ┃ ┣ 📜 app.js                # Khởi tạo Express app và import các routes
- ┃ ┗ 📜 server.js             # Khởi chạy server lắng nghe kết nối
- ┗ 📜 package.json            # Định nghĩa các thư viện phụ thuộc
+ ┃ ┣ 📂 core                      # Động cơ tự động hóa cốt lõi
+ ┃ ┃ ┣ 📜 account_gen.py          # Bộ sinh tên từ 1 đến 1000 & mật khẩu
+ ┃ ┃ ┣ 📜 browser_engine.py       # Khởi tạo Playwright Stealth & Context
+ ┃ ┃ ┣ 📜 proxy_manager.py        # Quản lý danh sách, kiểm tra sức khỏe & xoay IP
+ ┃ ┃ ┗ 📜 task_orchestrator.py    # Điều phối luồng xử lý chính (Pipeline)
+ ┃ ┣ 📂 services                  # Giao tiếp với các dịch vụ bên ngoài
+ ┃ ┃ ┣ 📜 temp_mail_service.py    # Kết nối REST API Mail ảo & Regex bóc tách OTP
+ ┃ ┃ ┗ 📜 captcha_solver.py       # Adapter giải Captcha tự động (Capsolver/2Captcha)
+ ┃ ┣ 📂 storage                   # Quản lý dữ liệu đầu ra
+ ┃ ┃ ┣ 📜 sqlite_repo.py          # Xử lý truy vấn SQLite, quản lý tiến trình Resume
+ ┃ ┃ ┗ 📜 txt_exporter.py         # Ghi file .txt định dạng "|" kèm File Lock
+ ┃ ┣ 📂 utils                     # Công cụ tiện ích bổ trợ
+ ┃ ┃ ┣ 📜 human_emulation.py      # Delay ngẫu nhiên, mô phỏng gõ phím người thật
+ ┃ ┃ ┗ 📜 logger.py               # Ghi log thời gian thực chuẩn định dạng
+ ┃ ┗ 📜 main.py                   # Điểm khởi chạy ứng dụng (Entry Point)
+ ┣ 📂 storage                     # Thư mục lưu dữ liệu SQLite & logs
+ ┃ ┗ 📜 database.sqlite           # Tệp SQLite cục bộ
+ ┣ 📂 output                      # Thư mục chứa kết quả xuất ra
+ ┃ ┗ 📜 accounts_output.txt       # File kết quả dạng username|password|email|...
+ ┣ 📜 requirements.txt            # Thư viện phụ thuộc
+ ┗ 📜 README.md                   # Hướng dẫn cài đặt & vận hành
 ```
 
+---
 
-## 3. Quy chuẩn Thiết kế API (RESTful API Standards)
+## 3. Thiết Kế Các Lớp Trừu Tượng Cốt Lõi (Core Interfaces)
 
-### Quy tắc đặt tên Endpoint:
-- Sử dụng danh từ số nhiều cho các tài nguyên (ví dụ: `/api/v1/users`, `/api/v1/orders`).
-- HTTP Methods:
-  - `GET`: Lấy dữ liệu.
-  - `POST`: Tạo mới tài nguyên.
-  - `PUT`: Cập nhật toàn bộ tài nguyên.
-  - `PATCH`: Cập nhật một phần tài nguyên.
-  - `DELETE`: Xóa tài nguyên.
+### 3.1 Giao diện Dịch vụ Email Ảo (Temp Mail Interface)
+Cho phép linh hoạt hoán đổi giữa nhiều nhà cung cấp mail (Mail.tm, GuerrillaMail, 1secmail hoặc Cloudflare) mà không phải sửa logic chính:
 
-### Định dạng Dữ liệu phản hồi chuẩn (Response Format)
+```python
+from abc import ABC, abstractmethod
 
-#### Phản hồi Thành công (Success Response):
-```json
-{
-  "success": true,
-  "message": "User updated successfully",
-  "data": {
-    "id": 1,
-    "email": "user@example.com"
-  }
-}
+class ITempMailProvider(ABC):
+    @abstractmethod
+    async def create_inbox(self) -> str:
+        """Tạo một hòm thư ảo mới và trả về địa chỉ email."""
+        pass
+
+    @abstractmethod
+    async def wait_for_otp(self, email: str, timeout_sec: int = 60) -> str:
+        """Lắng nghe hộp thư đến và bóc tách mã OTP qua Regex."""
+        pass
 ```
 
-#### Phản hồi Thất bại (Error Response):
-```json
-{
-  "success": false,
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Email is already registered",
-    "details": [
-      {
-        "field": "email",
-        "issue": "must be a valid email format"
-      }
-    ]
-  }
-}
+### 3.2 Giao diện Xuất Dữ Liệu (Exporter Interface)
+Hỗ trợ ghi nối an toàn nhiều luồng vào file `.txt`:
+
+```python
+class TxtExporter:
+    def __init__(self, file_path: str):
+        self.file_path = file_path
+
+    async def append_account(self, account_data: dict):
+        """Ghi thông tin tài khoản ngăn cách bởi dấu | có khóa file an toàn."""
+        line = (
+            f"{account_data['username']}|"
+            f"{account_data['password']}|"
+            f"{account_data['email']}|"
+            f"{account_data['game_name']}|"
+            f"{account_data['status']}|"
+            f"{account_data['created_at']}\n"
+        )
+        # Sử dụng aiofiles hoặc cơ chế lock file an toàn
+        ...
 ```
-
-## 4. Đặc tả Chi tiết các Endpoint mẫu (Sample Endpoint Spec)
-
-### 1. Đăng ký tài khoản mới
-* **URL**: `/api/v1/auth/register`
-* **Method**: `POST`
-* **Request Body**:
-  ```json
-  {
-    "email": "user@example.com",
-    "password": "SecurePassword123",
-    "full_name": "Nguyen Van A"
-  }
-  ```
-* **Response (201 Created)**:
-  ```json
-  {
-    "success": true,
-    "message": "User registered successfully",
-    "data": {
-      "id": 12,
-      "email": "user@example.com"
-    }
-  }
-  ```

@@ -1,0 +1,24 @@
+# Cấu hình tham số vận hành hệ thống Game Account Creator
+
+generator:
+  prefix: "gamer"
+  start_index: 1
+  end_index: 1000
+  padding: 4 # gamer_0001 -> gamer_1000
+  random_salt: false # Bật true nếu muốn thêm hậu tố ngẫu nhiên gamer_0001_x9
+
+workers:
+  concurrency: 2 # Số lượng tác vụ chạy song song
+  max_retries: 3 # Số lần thử lại tối đa cho mỗi tài khoản
+
+anti_ban:
+  use_proxy: false # Đặt true nếu có danh sách proxy sạch
+  proxy_rotation_every: 2 # Đổi IP sau mỗi 2 tài khoản
+  human_typing_delay_min_ms: 60 # Độ trễ tối thiểu khi gõ phím (ms)
+  human_typing_delay_max_ms: 140 # Độ trễ tối đa khi gõ phím (ms)
+  step_jitter_min_sec: 1.5 # Nghỉ ngẫu nhiên giữa các bước (giây)
+  step_jitter_max_sec: 3.5
+
+storage:
+  output_txt_path: "output/accounts_output.txt"
+  sqlite_db_path: "storage/database.sqlite"

@@ -1,0 +1,27 @@
+{
+  "Garena": {
+    "name": "Garena Official (SSO Portal)",
+    "register_url": "https://sso.garena.com/universal/register",
+    "selectors": {
+      "country_value": "VN",
+      "submit_btn": "button[type='submit'], button:has-text('Register Now')"
+    },
+    "default_password": "Longcon@1234",
+    "otp_wait_seconds": 60
+  },
+  "GameDemo": {
+    "name": "Game Mẫu Demo (Cục Bộ)",
+    "register_url": "http://127.0.0.1:8765/register",
+    "selectors": {
+      "username_input": "#username",
+      "email_input": "#email",
+      "password_input": "#password",
+      "repassword_input": "#confirm_password",
+      "send_otp_btn": "#btn-send-otp",
+      "otp_input": "#otp_code",
+      "submit_btn": "#btn-submit"
+    },
+    "default_password": "Longcon@1234",
+    "otp_wait_seconds": 15
+  }
+}

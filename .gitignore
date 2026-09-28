@@ -4,3 +4,9 @@ node_modules/
 dist/
 build/
 *.log
+__pycache__/
+.venv/
+data/
+output/
+storage/
+*.sqlite

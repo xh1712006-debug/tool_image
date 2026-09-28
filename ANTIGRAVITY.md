@@ -1,21 +1,31 @@
-# Hướng dẫn Phát triển cho Antigravity AI
+# Hướng Dẫn Định Hướng Cho Antigravity AI (AI Agent Orientation)
 
-## Triết lý Cốt lõi**Yêu cầu là số 1**: Luôn đối chiếu với [PROJECT_REQUIREMENTS.md](file:///PROJECT_REQUIREMENTS.md) để đảm bảo đi đúng hướng nghiệp vụ.
+## Triết Lý Cốt Lõi
 
-- **Kiến trúc đồng nhất**: Tuân thủ thiết kế kỹ thuật Modular MVC trong [docs/cores/02-backend.md](file:///docs/cores/02-backend.md).
-- **Code sạch**: Viết mã nguồn dễ bảo trì và có cấu trúc rõ ràng.
+1. **Yêu cầu là số 1**: Luôn đối chiếu với [PROJECT_REQUIREMENTS.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/PROJECT_REQUIREMENTS.md) để bám sát đặc tả nghiệp vụ của Tool Tạo Acc Game.
+2. **Theo dõi qua Luồng Trực quan**: Luôn bám sát 5 luồng hoạt động tại [docs/features/01-account-creation-workflow.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/features/01-account-creation-workflow.md).
+3. **Kiến trúc đồng nhất**: Tuân thủ thiết kế kỹ thuật Modular Engine trong [docs/cores/02-backend.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/cores/02-backend.md) và cơ sở dữ liệu SQLite trong [docs/cores/01-database.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/cores/01-database.md).
+4. **An toàn & Chống Ban**: Luôn tuân thủ quy chuẩn phòng vệ tại [docs/cores/04-security.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/cores/04-security.md).
+5. **Code sạch & Chú thích chuẩn**: Viết mã nguồn bằng Tiếng Anh, viết chú thích (comment) hoàn toàn bằng **Tiếng Việt** ngắn gọn theo [comment.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/.antigravity/rules/comment.md).
 
-## Quy tắc & Tiêu chuẩn Dự án
+---
 
-- **Tài liệu chi tiết**: Các hướng dẫn sâu hơn được lưu trong thư mục `docs/`.
-- **Luật riêng cho Agent**: Các quy định cụ thể về code style, đặt tên... nằm tại `.antigravity/rules/`.
-- **Quy tắc quan trọng nhất**: Luôn viết chú thích (comment) bằng **tiếng Việt**, ngắn gọn. Xem chi tiết tại [comment.md](file:///.antigravity/rules/comment.md)
+## Bản Đồ Tài Liệu Kỹ Thuật (Knowledge Map)
 
-## Kỹ năng & Lệnh (Skills & Commands)
+* **Đặc tả Nghiệp vụ (SRS)**: [PROJECT_REQUIREMENTS.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/PROJECT_REQUIREMENTS.md)
+* **Luồng Công Việc Trực Quan (Workflows)**: [docs/features/01-account-creation-workflow.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/features/01-account-creation-workflow.md)
+* **Đặc tả Cơ sở Dữ liệu (SQLite)**: [docs/cores/01-database.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/cores/01-database.md)
+* **Kiến trúc Engine & Backend**: [docs/cores/02-backend.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/cores/02-backend.md)
+* **Giao diện Theo dõi & Giám sát**: [docs/cores/03-frontend.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/cores/03-frontend.md)
+* **Phòng Vệ Chống Ban & Anti-Detection**: [docs/cores/04-security.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/cores/04-security.md)
+* **Hướng dẫn Vận hành**: [docs/walkthroughs/01-quickstart-guide.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/walkthroughs/01-quickstart-guide.md)
 
-- **Quy trình Phát triển**: Luôn tuân thủ quy trình 4 bước **Generate - Review - Test - Push** được định nghĩa tại [workflow.md](file:///.antigravity/skills/workflow.md). Xem chi tiết từng kỹ năng:
-  - [Generate Skill (Tạo mã)](file:///.antigravity/skills/lifecycles/01-generate.md)
-  - [Review Skill (Rà soát)](file:///.antigravity/skills/lifecycles/02-review.md)
-  - [Test Skill (Kiểm thử)](file:///.antigravity/skills/lifecycles/03-test.md)
-  - [Push Skill (Đẩy code)](file:///.antigravity/skills/lifecycles/04-push.md)
-- Tham khảo thư mục `.antigravity/skills` để sử dụng các kỹ năng và luồng công việc (workflow) nâng cao.
+---
+
+## Kỹ Năng & Quy Trình 4 Bước (Development Lifecycle)
+
+Luôn tuân thủ quy trình 4 bước **Generate - Review - Test - Push** được định nghĩa tại [.antigravity/skills/workflow.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/.antigravity/skills/workflow.md):
+1. [Bước 1: Generate Skill (Tạo mã nguồn)](file:///d:/project-test%28couse%29/tool_longcon/AIgent/.antigravity/skills/lifecycles/01-generate.md)
+2. [Bước 2: Review Skill (Rà soát code sạch)](file:///d:/project-test%28couse%29/tool_longcon/AIgent/.antigravity/skills/lifecycles/02-review.md)
+3. [Bước 3: Test Skill (Kiểm thử 100% Pass)](file:///d:/project-test%28couse%29/tool_longcon/AIgent/.antigravity/skills/lifecycles/03-test.md)
+4. [Bước 4: Push Skill (Cập nhật Walkthrough & Đẩy code)](file:///d:/project-test%28couse%29/tool_longcon/AIgent/.antigravity/skills/lifecycles/04-push.md)
