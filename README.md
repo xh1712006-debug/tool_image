@@ -1,73 +1,77 @@
-# Game Account Automation Engine (GameAccAuto) 🚀🤖
+# 🚀 Tool Auto Quét Kho Đồ Tướng & Skin Liên Quân Mobile (AI OCR + ADB)
 
-**Game Account Automation Engine** là hệ thống tự động hóa đăng ký tài khoản game hàng loạt (1 - 1000) chuyên nghiệp, tích hợp dịch vụ Email ảo lấy mã OTP tự động, phòng vệ chống ban (Anti-Ban / Anti-Detection) và lưu trữ xuất file chuẩn hóa. 
-
-Dự án được phát triển và vận hành dựa trên bộ khung **AgenticAI** - chuẩn hóa quy trình cộng tác giữa **Lập trình viên (User)** và **AI Agent (Antigravity)**.
+Đây là công cụ tự động hóa hoàn toàn việc quét, thống kê và lưu trữ hình ảnh Tướng/Skin trong game Liên Quân Mobile. Công cụ sử dụng công nghệ nhận diện hình ảnh (Computer Vision), AI đọc chữ (OCR) và giả lập thao tác (ADB) để đạt độ an toàn 100% (Không can thiệp API/RAM game).
 
 ---
 
-## 📁 Cấu Trúc Thư Mục Hệ Thống (Directory Structure)
+## 🔥 Tính năng nổi bật
 
+- **Nhận diện Tướng & Trang phục bằng AI (EasyOCR + OpenCV):** Đọc tên skin ngay trên màn hình để đặt tên file ảnh chuẩn xác.
+- **Giả lập thao tác người dùng (ADB):** Tự động bấm, vuốt mượt mà. Đảm bảo an toàn 100%, không lo khóa tài khoản.
+- **Tốc độ "Bàn thờ" (Extreme Speed):** Tối ưu hóa thời gian chờ (delay) giúp quét 1000 skin chỉ trong khoảng 10-15 phút (tùy tốc độ xử lý của máy tính và điện thoại).
+- **Cơ chế chống lặp thông minh:** Tự động phát hiện khi đã quét hết skin của một tướng để chuyển sang tướng tiếp theo.
+- **Giao diện Web UI:** Theo dõi tiến độ quét và quản lý thư viện ảnh trực tiếp trên trình duyệt.
+
+---
+
+## ⚙️ Yêu cầu hệ thống
+
+1. **Hệ điều hành:** Windows 10/11.
+2. **Ngôn ngữ:** Python 3.11.
+3. **Phần cứng:**
+   - Ưu tiên có Card đồ họa rời (NVIDIA GPU) để chạy AI EasyOCR nhanh nhất. (Nếu không có sẽ dùng CPU).
+   - Thiết bị Android (hoặc giả lập Android như LDPlayer, Nox, Bluestacks).
+4. **Cài đặt Android:** Thiết bị/Giả lập phải được bật tính năng **USB Debugging (Gỡ lỗi USB)**.
+
+---
+
+## 🛠 Hướng dẫn Cài đặt & Chạy Tool
+
+### Bước 1: Cài đặt thư viện Python
+Mở Terminal/PowerShell và chạy lệnh:
+```powershell
+# Bật môi trường ảo (nếu có)
+.\.venv\Scripts\activate
+
+# Cài đặt các thư viện cần thiết
+pip install -r requirements.txt
+```
+
+### Bước 2: Thiết lập Game
+1. Mở game Liên Quân Mobile trên điện thoại hoặc giả lập.
+2. Đăng nhập vào tài khoản cần quét.
+3. **Quan trọng:** Để nguyên màn hình ở **SẢNH CHÍNH** của game.
+
+### Bước 3: Chạy Tool Quét (Chế độ Tối đa tốc độ)
+Mở Terminal và chạy lệnh sau để bật tool:
+```powershell
+$env:PYTHONIOENCODING="utf-8"; .\.venv\Scripts\python.exe test_hero_scraper.py
+```
+- Tool sẽ khởi động và tải AI Nhận diện chữ (Mất khoảng vài chục giây cho lần đầu).
+- Sau khi tải xong, màn hình Terminal sẽ hiện: **`[SẴN SÀNG] Nhấn phím ENTER để BẮT ĐẦU QUÉT`**.
+- Bạn chỉ cần bấm Enter, rồi bỏ tay khỏi chuột/bàn phím để Tool tự động làm việc.
+- Sau khi quét xong nick 1, bạn có thể tự tay chuyển acc khác trong game, sau đó lại bấm Enter ở Terminal để quét nick 2 (Không cần tải lại AI).
+
+---
+
+## 📂 Cấu trúc thư mục Output
+
+Tất cả ảnh chụp và báo cáo sẽ được tự động phân loại và lưu tại thư mục `scraped_data/`:
 ```text
-📦 AIgent (GameAccAuto Project)
- ┣ 📂 .antigravity            # "Bộ não" vận hành & quy tắc của AI Agent
- ┃ ┣ 📂 rules                 # Các quy định lập trình bắt buộc
- ┃ ┗ 📂 skills                # Vòng đời phát triển (Generate - Review - Test - Push)
- ┣ 📂 docs                    # Kho tri thức kỹ thuật & Đặc tả hệ thống (Source of Truth)
- ┃ ┣ 📂 cores                 # Các tài liệu đặc tả nền tảng hệ thống
- ┃ ┣ 📂 features              # Đặc tả chi tiết các phân hệ nghiệp vụ & luồng hoạt động
- ┃ ┗ 📂 walkthroughs          # Hướng dẫn dành cho người vận hành
- ┣ 📂 src                     # Mã nguồn chính của hệ thống
- ┃ ┣ 📂 agents                # Agent thực thi logic (VD: assistant_runner.py)
- ┃ ┣ 📂 browser               # Tương tác trình duyệt & giả lập hành vi
- ┃ ┣ 📂 core                  # Lõi điều phối (VD: task_orchestrator.py)
- ┃ ┣ 📂 demo                  # Server giả lập phục vụ quá trình test
- ┃ ┣ 📂 network               # Xử lý xoay proxy chống ban
- ┃ ┣ 📂 services              # Các dịch vụ bên ngoài (VD: Temp Mail API)
- ┃ ┣ 📂 storage               # Tương tác Database SQLite & xuất file Text
- ┃ ┗ 📂 utils                 # Tiện ích tạo tài khoản, sinh chuỗi ngẫu nhiên
- ┣ 📜 ANTIGRAVITY.md          # Bản đồ định hướng chính cho AI Agent
- ┗ 📜 PROJECT_REQUIREMENTS.md # Yêu cầu nghiệp vụ chi tiết của sản phẩm (SRS)
+scraped_data/
+├── BaoCao_QuetSkin.md      # Báo cáo tổng hợp số lượng Tướng/Skin
+├── database.json           # Dữ liệu dạng JSON dùng cho Web UI
+└── Images/                 # Thư mục chứa ảnh đã phân loại
+    ├── Tuong_001/          # Ảnh của tướng 1
+    │   ├── Ten_Skin_1.png
+    │   └── Ten_Skin_2.png
+    ├── Tuong_002/
+    └── ...
 ```
 
 ---
 
-## 🔄 5 Luồng Nghiệp Vụ Cốt Lõi (Core Workflows)
-
-Hệ thống vận hành theo 5 luồng độc lập, xem chi tiết và sơ đồ tương tác tại [01-account-creation-workflow.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/features/01-account-creation-workflow.md):
-
-1. **Luồng 1: Generator & Profile Configuration**: Tự động sinh tên tuần tự từ 1 đến 1000 (`prefix_0001` -> `prefix_1000`), mật khẩu mặc định hoặc ngẫu nhiên, quản lý cấu hình đa game.
-2. **Luồng 2: Temp Mail & Auto OTP Extractor**: Tạo email ảo 10 phút qua REST API, tự động Polling hòm thư và Regex trích xuất mã OTP trong 60s.
-3. **Luồng 3: Registration Engine**: Điều khiển Playwright Stealth tự động điền form, mô phỏng gõ phím và hành vi người thật.
-4. **Luồng 4: Anti-Ban & Anti-Detection**: Xoay IP qua Proxy Dân cư/4G, làm giả dấu vân tay trình duyệt (Canvas, WebGL, AudioContext) và thêm độ trễ ngẫu nhiên (Jitter).
-5. **Luồng 5: State Persistence & Exporter**: Ghi dữ liệu thời gian thực ra file `.txt` phân tách bằng dấu `|` (`username|password|email|...`) và lưu song song vào SQLite để khôi phục tiến trình khi gặp sự cố.
-
----
-
-## 🛠️ Hướng Dẫn Vận Hành Nhanh
-
-Xem hướng dẫn chi tiết tại [01-quickstart-guide.md](file:///d:/project-test%28couse%29/tool_longcon/AIgent/docs/walkthroughs/01-quickstart-guide.md):
-
-1. **Cài đặt môi trường**:
-   ```bash
-   pip install -r requirements.txt
-   playwright install chromium
-   ```
-2. **Chạy công cụ**:
-   ```bash
-   # Tạo từ 1 đến 1000 cho game mẫu
-   python src/main.py --game GameMau --start 1 --end 1000
-
-   # Tiếp tục phiên chạy dang dở (Resume)
-   python src/main.py --game GameMau --resume
-   ```
-3. **Kết quả**: Được lưu tự động tại `output/accounts_output.txt`.
-
----
-
-## 🤝 Chu Trình Phát Triển Với AI Agent (Antigravity)
-
-Quy trình phát triển trong dự án tuân thủ nghiêm ngặt chu trình 4 bước: **Generate -> Review -> Test -> Push**:
-- Mã nguồn đặt tên bằng Tiếng Anh.
-- Chú thích (comments) trong mã nguồn viết hoàn toàn bằng **Tiếng Việt**.
-- Tài liệu đặc tả kỹ thuật trong `docs/` là nguồn sự thật (Source of Truth), luôn đồng bộ sau khi test pass 100%.
+## ⚠️ Lưu ý Quan Trọng
+- **Tuyệt đối không chạm vào màn hình/chuột** của giả lập điện thoại trong lúc Tool đang chạy để tránh việc click nhầm.
+- Tool ưu tiên tốc độ quét bằng cách giảm độ trễ xuống mức tối thiểu. Nếu máy tính hoặc giả lập của bạn bị lag, game không kịp hiển thị hiệu ứng đổi skin, bạn có thể tự tăng thêm thời gian nghỉ `asyncio.sleep()` trong file `src/core/hero_scraper.py`.
+- Các file mẫu nhận diện (Template Matching) nằm trong thư mục `templates/`. Không được xóa thư mục này vì Tool dùng nó để làm hệ quy chiếu click màn hình.
