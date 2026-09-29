@@ -22,3 +22,5 @@ anti_ban:
 storage:
   output_txt_path: "output/accounts_output.txt"
   sqlite_db_path: "storage/database.sqlite"
+  use_postgres: true
+  postgres_dsn: "postgresql://postgres:postgres@localhost:5433/tool_image"

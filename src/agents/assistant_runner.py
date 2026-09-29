@@ -235,6 +235,54 @@ class AssistantRunner:
 
         return False
 
+    async def run_adb_login_game(self, username: str, password: str) -> bool:
+        """Đăng nhập trực tiếp vào Game trên Điện thoại thông qua cáp Type-C (ADB)"""
+        from src.core.adb_controller import ADBController
+        from src.core.game_bot import GameBot
+        adb = ADBController()
+        bot = GameBot(adb)
+        
+        devices = await adb.get_devices()
+        if not devices:
+            console.print("[red][!] Không tìm thấy điện thoại nào! Vui lòng cắm cáp Type-C và bật Gỡ Lỗi USB (USB Debugging).[/red]")
+            return False
+            
+        console.print(f"[cyan][*] Đã kết nối với điện thoại: {devices[0]}[/cyan]")
+        
+        # Bật màn hình hiển thị điện thoại lên PC cho người dùng thấy
+        console.print("[cyan][*] Đang mở màn hình phản chiếu điện thoại (Scrcpy)...[/cyan]")
+        adb.start_screen_mirror()
+        await asyncio.sleep(2.0) # Đợi cửa sổ hiện lên
+        
+        # Tự động dọn dẹp các popup, sự kiện, thông báo...
+        console.print("[cyan][*] [TỰ ĐỘNG] Đang kích hoạt MẮT THẦN (Computer Vision) để dọn dẹp màn hình...[/cyan]")
+        await bot.close_all_popups(max_attempts=15)
+        
+        console.print(f"[cyan][*] Đang điều khiển điện thoại nhập tài khoản: {username}...[/cyan]")
+        
+        try:
+            # TODO: Cần người dùng thay đổi tọa độ (X, Y) này cho khớp với màn hình điện thoại của họ!
+            # 1. Chạm vào ô User (ví dụ: X=500, Y=600)
+            await adb.tap(500, 600)
+            await asyncio.sleep(1.0)
+            await adb.type_text(username)
+            await asyncio.sleep(1.0)
+            
+            # 2. Chạm vào ô Mật khẩu (ví dụ: X=500, Y=800)
+            await adb.tap(500, 800)
+            await asyncio.sleep(1.0)
+            await adb.type_text(password)
+            await asyncio.sleep(1.0)
+            
+            # 3. Chạm vào nút Đăng Nhập (ví dụ: X=500, Y=1000)
+            await adb.tap(500, 1000)
+            
+            console.print("[bold green][+] Đã điều khiển điện thoại nhập xong Tài khoản & Mật khẩu![/bold green]")
+            return True
+        except Exception as e:
+            console.print(f"[red][!] Lỗi điều khiển ADB: {e}[/red]")
+            return False
+
     async def run_login_garena(
         self,
         username: str,

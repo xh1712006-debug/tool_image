@@ -4,6 +4,9 @@ import io
 import json
 import os
 import sys
+
+from dotenv import load_dotenv
+load_dotenv()
 from pathlib import Path
 
 # Đảm bảo console Windows hỗ trợ xuất UTF-8 tiếng Việt
@@ -103,11 +106,26 @@ async def main():
     sqlite_path = os.path.join(PROJECT_ROOT, storage_cfg.get("sqlite_db_path", "storage/database.sqlite"))
 
     # Khởi tạo lưu trữ và kiểm tra Resume
-    sqlite_repo = SqliteRepository(sqlite_path)
+    if storage_cfg.get("use_postgres", False):
+        from src.storage.postgres_repo import PostgresRepository
+        dsn = os.getenv("POSTGRES_DSN")
+        if not dsn:
+            dsn = storage_cfg.get("postgres_dsn", "postgresql://postgres:postgres@localhost:5432/tool_image")
+            
+        console.print(f"[cyan][*] Đang sử dụng cơ sở dữ liệu PostgreSQL...[/cyan]")
+        try:
+            repo = PostgresRepository(dsn=dsn)
+        except Exception as e:
+            console.print(f"[red][!] Lỗi kết nối PostgreSQL: {e}[/red]")
+            console.print("[yellow]=> Hãy mở pgAdmin và chạy file sql.txt để tạo bảng (hoặc sửa dsn trong file .env)[/yellow]")
+            return
+    else:
+        repo = SqliteRepository(sqlite_path)
+    
     txt_exporter = TxtExporter(output_txt)
 
     if args.resume:
-        start_index = sqlite_repo.get_resume_index(args.game)
+        start_index = repo.get_resume_index(args.game)
         console.print(f"[bold green]Tính năng Resume kích hoạt:[/bold green] Bắt đầu tiếp tục từ tài khoản số [cyan]{start_index}[/cyan]")
     else:
         start_index = args.start
@@ -193,23 +211,33 @@ async def main():
     runner = AssistantRunner(
         browser_engine=browser_engine,
         proxy_manager=proxy_manager,
-        sqlite_repo=sqlite_repo,
+        sqlite_repo=repo,
         txt_exporter=txt_exporter,
         use_proxy=use_proxy,
         mail_provider=mail_prov,
     )
 
     try:
-        console.print("\n[yellow][*] Đang chờ bạn nhập tài khoản từ Bảng Điều Khiển...[/yellow]")
+        console.print("\n[yellow][*] Đang chờ lệnh từ Bảng Điều Khiển...[/yellow]")
         while True:
             if BOT_JOB_QUEUE:
                 job = BOT_JOB_QUEUE.pop(0)
-                u = job["username"]
-                p = job["password"]
-                console.print(f"\n[bold blue]═══════════ ĐÃ NHẬN LỆNH ĐĂNG NHẬP: {u} ═══════════[/bold blue]")
-                # Chạy đăng nhập Garena
-                await runner.run_login_garena(username=u, password=p)
-                console.print("\n[yellow][*] Tiếp tục chờ lệnh mới từ Bảng Điều Khiển...[/yellow]")
+                
+                if job.get("action") == "clean_popups":
+                    from src.core.adb_controller import ADBController
+                    from src.core.game_bot import GameBot
+                    console.print("\n[bold yellow]═══════════ NHẬN LỆNH DỌN DẸP POPUP TỪ WEB ═══════════[/bold yellow]")
+                    adb = ADBController()
+                    bot = GameBot(adb)
+                    await bot.close_all_popups(max_attempts=15)
+                    console.print("\n[yellow][*] Tiếp tục chờ lệnh mới từ Bảng Điều Khiển...[/yellow]")
+                else:
+                    u = job.get("username", "")
+                    p = job.get("password", "")
+                    console.print(f"\n[bold blue]═══════════ ĐÃ NHẬN LỆNH ĐĂNG NHẬP: {u} ═══════════[/bold blue]")
+                    # Chạy đăng nhập trên điện thoại qua ADB
+                    await runner.run_adb_login_game(username=u, password=p)
+                    console.print("\n[yellow][*] Tiếp tục chờ lệnh mới từ Bảng Điều Khiển...[/yellow]")
             else:
                 await asyncio.sleep(1.0)
     finally:
